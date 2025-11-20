@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants & Cafés de France</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        select, button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .card .type {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card .address, .card .phone {
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .card .description {
+            margin-top: 1rem;
+            font-style: italic;
+            color: #888;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 0.5rem;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+        
+        .call {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .map {
+            background: #2196F3;
+            color: white;
+        }
+
+        .subscription-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 3rem 0;
+            padding: 2rem 0;
+            color: white;
+        }
+
+        .subscription-card {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .subscription-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin: 0;
+            flex: 1;
+        }
+
+        .price-tag {
+            background: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .price-tag span {
+            font-size: 0.9rem;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+
+        .subscription-benefits h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .subscription-benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .subscription-benefits li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .subscription-cta {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px dashed #667eea;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 1rem 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .small-text {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .subscription-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .subscription-card {
+                padding: 1.5rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🍽️ Guide des Restaurants & Cafés de France</h1>
+            <p>Découvrez 100 établissements sélectionnés dans les 10 plus grandes villes françaises</p>
+            <div class="stats">
+                <strong>📊 10 villes • 10 établissements par ville • 100 adresses au total</strong>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="filters">
+            <select id="villeSelect">
+                <option value="">Toutes les villes</option>
+            </select>
+            
+            <select id="typeSelect">
+                <option value="">Tous les types</option>
+                <option value="Restaurant">Restaurant</option>
+                <option value="Café">Café</option>
+                <option value="Pub">Pub</option>
+                <option value="Bar">Bar</option>
+            </select>
+            
+            <button onclick="filtrerEtablissements()">Filtrer</button>
+            <button onclick="reinitialiserFiltres()">Réinitialiser</button>
+        </div>
+
+        <div id="resultats" class="grid">
+            <!-- Les cartes seront générées ici par JavaScript -->
+        </div>
+    </div>
+
+    <!-- Section Abonnement -->
+    <section class="subscription-section">
+        <div class="container">
+            <div class="subscription-card">
+                <div class="subscription-header">
+                    <h2>📈 Proposez votre établissement dans notre guide</h2>
+                    <div class="price-tag">15€<span>/mois</span></div>
+                </div>
+                
+                <div class="subscription-benefits">
+                    <h3>Avantages de l'abonnement :</h3>
+                    <ul>
+                        <li>✅ Visibilité auprès de milliers de clients potentiels</li>
+                        <li>✅ Fiche détaillée avec photos et description</li>
+                        <li>✅ Intégration GPS et itinéraires</li>
+                        <li>✅ Mise à jour en temps réel</li>
+                        <li>✅ Statistiques de consultation</li>
+                        <li>✅ Support client dédié</li>
+                    </ul>
+                </div>
+                
+                <div class="subscription-cta">
+                    <p><strong>Rejoignez notre réseau d'établissements partenaires !</strong></p>
+                    <a href="mailto:Djonasse-1-@gmail.com?subject=Abonnement%20établissement%20-%2015€%2Fmois&body=Bonjour,%20je%20souhaite%20ajouter%20mon%20établissement%20à%20votre%20guide." 
+                       class="cta-button">
+                        📧 Contactez-nous à Djonasse-1-@gmail.com
+                    </a>
+                    <p class="small-text">Réponse sous 24h • Sans engagement • Essai gratuit 15 jours</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // DONNÉES COMPLÈTES AVEC 10 VILLES ET 10 ÉTABLISSEMENTS PAR VILLE
+        const data = {
+            "villes": [
+                {
+                    "nom": "Paris",
+                    "établissements": [
+                        {"nom": "Le Comptoir du Relais", "type": "Restaurant", "adresse": "9 Carrefour de l'Odéon, 75006 Paris", "téléphone": "01 44 27 07 97", "gps": {"lat": 48.8514, "lng": 2.3376}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Restaurant traditionnel français dans le quartier de l'Odéon"},
+                        {"nom": "Café de Flore", "type": "Café", "adresse": "172 Bd Saint-Germain, 75006 Paris", "téléphone": "01 45 48 55 26", "gps": {"lat": 48.8542, "lng": 2.3327}, "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&h=300&fit=crop", "description": "Café historique fréquenté par les intellectuels"},
+                        {"nom": "Frenchie Bar à Vins", "type": "Restaurant", "adresse": "5-6 Rue du Nil, 75002 Paris", "téléphone": "01 40 39 96 19", "gps": {"lat": 48.8692, "lng": 2.3478}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine créative et cave à vins sélectionnée"},
+                        {"nom": "Le Mary Céleste", "type": "Bar", "adresse": "1 Commines, 75003 Paris", "téléphone": "01 42 77 98 37", "gps": {"lat": 48.8615, "lng": 2.3632}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Bar à cocktails branché dans le Marais"},
+                        {"nom": "Septime", "type": "Restaurant", "adresse": "80 Rue de Charonne, 75011 Paris", "téléphone": "01 43 67 38 29", "gps": {"lat": 48.8529, "lng": 2.3751}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Restaurant étoilé Michelin cuisine contemporaine"},
+                        {"nom": "Café des Deux Moulins", "type": "Café", "adresse": "15 Rue Lepic, 75018 Paris", "téléphone": "01 42 54 90 50", "gps": {"lat": 48.8842, "lng": 2.3325}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café célèbre pour avoir été dans le film Amélie Poulain"},
+                        {"nom": "The Frog & Rosbif", "type": "Pub", "adresse": "116 Rue St Denis, 75002 Paris", "téléphone": "01 42 36 34 73", "gps": {"lat": 48.8621, "lng": 2.3498}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub anglais avec bières artisanales"},
+                        {"nom": "Le Grand Véfour", "type": "Restaurant", "adresse": "17 Rue de Beaujolais, 75001 Paris", "téléphone": "01 42 96 56 27", "gps": {"lat": 48.8664, "lng": 2.3372}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Restaurant gastronomique historique au Palais Royal"},
+                        {"nom": "Coutume Café", "type": "Café", "adresse": "47 Rue de Babylone, 75007 Paris", "téléphone": "01 45 51 50 47", "gps": {"lat": 48.8512, "lng": 2.3145}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café torréfacteur et brûlerie artisanale"},
+                        {"nom": "The Long Hop", "type": "Pub", "adresse": "34 Rue Dauphine, 75006 Paris", "téléphone": "01 46 34 12 84", "gps": {"lat": 48.8539, "lng": 2.3387}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Pub irlandais ambiance chaleureuse"}
+                    ]
+                },
+                {
+                    "nom": "Marseille",
+                    "établissements": [
+                        {"nom": "Chez Fonfon", "type": "Restaurant", "adresse": "140 Vallon des Auffes, 13007 Marseille", "téléphone": "04 91 52 14 38", "gps": {"lat": 43.2836, "lng": 5.3503}, "image": "https://images.unsplash.com/photo-1577717903315-1691ae25ab3f?w=400&h=300&fit=crop", "description": "Restaurant de bouillabaisse réputé face à la mer"},
+                        {"nom": "La Caravelle", "type": "Bar", "adresse": "34 Quai du Port, 13002 Marseille", "téléphone": "04 91 90 36 64", "gps": {"lat": 43.2952, "lng": 5.3701}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Bar avec vue panoramique sur le Vieux-Port"},
+                        {"nom": "Le Miramar", "type": "Restaurant", "adresse": "12 Quai du Port, 13002 Marseille", "téléphone": "04 91 91 10 40", "gps": {"lat": 43.2950, "lng": 5.3705}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Spécialiste de la bouillabaisse traditionnelle"},
+                        {"nom": "Café de l'Abbaye", "type": "Café", "adresse": "15 Rue d'Endoume, 13007 Marseille", "téléphone": "04 91 52 17 61", "gps": {"lat": 43.2904, "lng": 5.3623}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café typique du quartier d'Endoume"},
+                        {"nom": "Le Petit Nice", "type": "Restaurant", "adresse": "Anse de Maldormé, 13007 Marseille", "téléphone": "04 91 59 25 92", "gps": {"lat": 43.2742, "lng": 5.3447}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Restaurant 3 étoiles Michelin avec vue sur la Méditerranée"},
+                        {"nom": "O'Brady's Pub", "type": "Pub", "adresse": "378 Avenue de Mazargues, 13008 Marseille", "téléphone": "04 91 71 53 53", "gps": {"lat": 43.2701, "lng": 5.3792}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais authentique"},
+                        {"nom": "Café des Épices", "type": "Restaurant", "adresse": "4 Rue du Lacydon, 13002 Marseille", "téléphone": "04 91 91 22 69", "gps": {"lat": 43.2955, "lng": 5.3698}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine méditerranéenne créative"},
+                        {"nom": "La Samaritaine", "type": "Bar", "adresse": "2 Quai du Port, 13002 Marseille", "téléphone": "04 91 90 44 44", "gps": {"lat": 43.2953, "lng": 5.3703}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Bar élégant sur le Vieux-Port"},
+                        {"nom": "Une Table au Sud", "type": "Restaurant", "adresse": "2 Quai du Port, 13002 Marseille", "téléphone": "04 91 90 63 53", "gps": {"lat": 43.2953, "lng": 5.3703}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Restaurant gastronomique vue mer"},
+                        {"nom": "The Red Lion", "type": "Pub", "adresse": "231 Avenue Pierre Mendès France, 13008 Marseille", "téléphone": "04 91 25 36 88", "gps": {"lat": 43.2715, "lng": 5.3774}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub britannique traditionnel"}
+                    ]
+                },
+                {
+                    "nom": "Lyon",
+                    "établissements": [
+                        {"nom": "Paul Bocuse", "type": "Restaurant", "adresse": "40 Quai de la Plage, 69660 Collonges", "téléphone": "04 72 42 90 90", "gps": {"lat": 45.8187, "lng": 4.8275}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Temple de la gastronomie française 3 étoiles Michelin"},
+                        {"nom": "Le Slake", "type": "Café", "adresse": "9 Rue Burdeau, 69001 Lyon", "téléphone": "04 78 39 68 31", "gps": {"lat": 45.7679, "lng": 4.8345}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café branché dans le quartier des pentes"},
+                        {"nom": "Le Nord", "type": "Restaurant", "adresse": "18 Rue Neuille, 69002 Lyon", "téléphone": "04 72 10 69 69", "gps": {"lat": 45.7504, "lng": 4.8321}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Bouchon lyonnais traditionnel"},
+                        {"nom": "Wallace Bar", "type": "Pub", "adresse": "2 Rue Octavio Mey, 69005 Lyon", "téléphone": "04 78 25 01 07", "gps": {"lat": 45.7582, "lng": 4.8083}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub écossais avec large sélection de whiskies"},
+                        {"nom": "Café 203", "type": "Café", "adresse": "203 Rue Paul Bert, 69003 Lyon", "téléphone": "04 78 60 27 97", "gps": {"lat": 45.7489, "lng": 4.8634}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café restaurant dans le 3ème arrondissement"},
+                        {"nom": "Le Bouchon des Filles", "type": "Restaurant", "adresse": "20 Rue Sergent Blandan, 69001 Lyon", "téléphone": "04 78 30 40 44", "gps": {"lat": 45.7678, "lng": 4.8321}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Bouchon lyonnais tenu par des femmes"},
+                        {"nom": "Johnny's Kitchen", "type": "Pub", "adresse": "136 Rue Montesquieu, 69007 Lyon", "téléphone": "04 78 72 92 79", "gps": {"lat": 45.7478, "lng": 4.8412}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub gastronomique et bar à bières"},
+                        {"nom": "Café du Musée", "type": "Café", "adresse": "1 Place de la Comédie, 69001 Lyon", "téléphone": "04 78 30 12 93", "gps": {"lat": 45.7673, "lng": 4.8355}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café terrasse face à l'Opéra"},
+                        {"nom": "Brasserie Georges", "type": "Restaurant", "adresse": "30 Cours de Verdun, 69002 Lyon", "téléphone": "04 72 56 54 54", "gps": {"lat": 45.7472, "lng": 4.8284}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Plus ancienne brasserie de France fondée en 1836"},
+                        {"nom": "The Smoking Dog", "type": "Pub", "adresse": "8 Rue Lainerie, 69005 Lyon", "téléphone": "04 78 39 44 47", "gps": {"lat": 45.7648, "lng": 4.8271}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Pub anglais dans le Vieux Lyon"}
+                    ]
+                },
+                {
+                    "nom": "Toulouse",
+                    "établissements": [
+                        {"nom": "Michel Sarran", "type": "Restaurant", "adresse": "21 Bd Armand Duportal, 31000 Toulouse", "téléphone": "05 61 12 32 32", "gps": {"lat": 43.6045, "lng": 1.4440}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Restaurant étoilé Michelin cuisine gastronomique"},
+                        {"nom": "The Cambridge", "type": "Pub", "adresse": "10 Rue de la Bourse, 31000 Toulouse", "téléphone": "05 61 21 89 33", "gps": {"lat": 43.6045, "lng": 1.4440}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub anglais traditionnel au cœur de Toulouse"},
+                        {"nom": "Café du Port", "type": "Café", "adresse": "26 Port Saint-Sauveur, 31000 Toulouse", "téléphone": "05 61 62 48 63", "gps": {"lat": 43.6018, "lng": 1.4392}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café convivial près du canal"},
+                        {"nom": "Le Bibent", "type": "Restaurant", "adresse": "5 Place du Capitole, 31000 Toulouse", "téléphone": "05 61 23 89 03", "gps": {"lat": 43.6042, "lng": 1.4432}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Brasserie historique sur la place du Capitole"},
+                        {"nom": "Monsieur Georges", "type": "Bar", "adresse": "33 Rue de la Colombette, 31000 Toulouse", "téléphone": "05 34 40 33 80", "gps": {"lat": 43.6009, "lng": 1.4478}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Bar à cocktails raffiné"},
+                        {"nom": "Café des Artistes", "type": "Café", "adresse": "137 Avenue de Muret, 31000 Toulouse", "téléphone": "05 61 42 04 67", "gps": {"lat": 43.5847, "lng": 1.4305}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café culturel et artistique"},
+                        {"nom": "Le Genty Magre", "type": "Restaurant", "adresse": "4 Rue Genty Magre, 31000 Toulouse", "téléphone": "05 61 21 38 14", "gps": {"lat": 43.5998, "lng": 1.4459}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine toulousaine traditionnelle"},
+                        {"nom": "The Four Monkeys", "type": "Pub", "adresse": "49 Rue de la Colombette, 31000 Toulouse", "téléphone": "05 61 62 48 63", "gps": {"lat": 43.6012, "lng": 1.4481}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais ambiance chaleureuse"},
+                        {"nom": "Café Populaire", "type": "Café", "adresse": "17 Place du Salin, 31000 Toulouse", "téléphone": "05 34 41 30 40", "gps": {"lat": 43.5979, "lng": 1.4428}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café branché dans le quartier historique"},
+                        {"nom": "Le 19", "type": "Restaurant", "adresse": "19 Descente de la Halle aux Poissons, 31000 Toulouse", "téléphone": "05 34 31 94 84", "gps": {"lat": 43.6002, "lng": 1.4415}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Restaurant gastronomique vue sur la Garonne"}
+                    ]
+                },
+                {
+                    "nom": "Nice",
+                    "établissements": [
+                        {"nom": "Le Safari", "type": "Restaurant", "adresse": "1 Cours Saleya, 06300 Nice", "téléphone": "04 93 80 18 44", "gps": {"lat": 43.6957, "lng": 7.2755}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Restaurant niçois typique sur le marché aux fleurs"},
+                        {"nom": "Café de Turin", "type": "Café", "adresse": "5 Place Garibaldi, 06300 Nice", "téléphone": "04 93 62 29 52", "gps": {"lat": 43.6985, "lng": 7.2792}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Célèbre pour ses fruits de mer et spécialités niçoises"},
+                        {"nom": "La Merenda", "type": "Restaurant", "adresse": "4 Rue Raoul Bosio, 06300 Nice", "téléphone": "04 93 85 86 38", "gps": {"lat": 43.6968, "lng": 7.2724}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Cuisine niçoise authentique dans une ambiance traditionnelle"},
+                        {"nom": "The Snug", "type": "Pub", "adresse": "22 Rue Droite, 06300 Nice", "téléphone": "04 93 80 38 94", "gps": {"lat": 43.6978, "lng": 7.2758}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais dans le Vieux Nice"},
+                        {"nom": "Café du Cycliste", "type": "Café", "adresse": "16 Rue du Marché, 06300 Nice", "téléphone": "04 93 56 96 33", "gps": {"lat": 43.6952, "lng": 7.2771}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café concept store pour les amateurs de cyclisme"},
+                        {"nom": "Le Comptoir du Marché", "type": "Restaurant", "adresse": "8 Rue du Marché, 06300 Nice", "téléphone": "04 93 13 45 01", "gps": {"lat": 43.6954, "lng": 7.2773}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine du marché fraîche et inventive"},
+                        {"nom": "Ma Nolan's", "type": "Pub", "adresse": "2 Rue St François de Paule, 06300 Nice", "téléphone": "04 93 80 23 87", "gps": {"lat": 43.6959, "lng": 7.2748}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub sportif avec écrans géants"},
+                        {"nom": "Café Fino", "type": "Café", "adresse": "29 Rue Bavastro, 06300 Nice", "téléphone": "04 93 89 37 61", "gps": {"lat": 43.7072, "lng": 7.2894}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café design dans le nouveau Nice"},
+                        {"nom": "L'Ane Rouge", "type": "Restaurant", "adresse": "7 Quai des Deux Emmanuel, 06300 Nice", "téléphone": "04 93 89 49 63", "gps": {"lat": 43.6951, "lng": 7.2802}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Restaurant de poissons face à la mer"},
+                        {"nom": "The Blue Whales", "type": "Pub", "adresse": "14 Rue de la Préfecture, 06300 Nice", "téléphone": "04 93 62 99 98", "gps": {"lat": 43.6965, "lng": 7.2741}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Pub lounge avec musique live"}
+                    ]
+                },
+                {
+                    "nom": "Bordeaux",
+                    "établissements": [
+                        {"nom": "La Tupina", "type": "Restaurant", "adresse": "6 Rue Porte de la Monnaie, 33800 Bordeaux", "téléphone": "05 57 91 56 37", "gps": {"lat": 44.8412, "lng": -0.5750}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Cuisine du Sud-Ouest dans une ambiance rustique"},
+                        {"nom": "L'Alchimiste", "type": "Café", "adresse": "59 Rue des Remparts, 33000 Bordeaux", "téléphone": "05 56 48 13 80", "gps": {"lat": 44.8412, "lng": -0.5750}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café torréfacteur artisanal"},
+                        {"nom": "Le Chapon Fin", "type": "Restaurant", "adresse": "5 Rue Montesquieu, 33000 Bordeaux", "téléphone": "05 56 79 10 10", "gps": {"lat": 44.8439, "lng": -0.5742}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Restaurant historique classé monument historique"},
+                        {"nom": "The Houses of Parliament", "type": "Pub", "adresse": "11 Rue du Parlement Sainte-Catherine, 33000 Bordeaux", "téléphone": "05 56 44 55 89", "gps": {"lat": 44.8418, "lng": -0.5725}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub anglais typique au cœur de Bordeaux"},
+                        {"nom": "Café Baudet", "type": "Café", "adresse": "27 Place du Parlement, 33000 Bordeaux", "téléphone": "05 56 44 24 48", "gps": {"lat": 44.8415, "lng": -0.5728}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café terrasse sur la place animée"},
+                        {"nom": "Miles", "type": "Restaurant", "adresse": "33 Rue du Cancera, 33000 Bordeaux", "téléphone": "05 56 48 23 68", "gps": {"lat": 44.8387, "lng": -0.5762}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Restaurant branché cuisine fusion"},
+                        {"nom": "The Connemara", "type": "Pub", "adresse": "18 Cours d'Albret, 33000 Bordeaux", "téléphone": "05 56 52 82 57", "gps": {"lat": 44.8432, "lng": -0.5784}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais avec bières pression"},
+                        {"nom": "Café du Musée", "type": "Café", "adresse": "39 Rue des Récollets, 33000 Bordeaux", "téléphone": "05 56 91 53 13", "gps": {"lat": 44.8463, "lng": -0.5741}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café élégant près des musées"},
+                        {"nom": "Le Petit Commerce", "type": "Restaurant", "adresse": "22 Rue Parlement Saint-Pierre, 33000 Bordeaux", "téléphone": "05 56 79 76 58", "gps": {"lat": 44.8419, "lng": -0.5712}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Spécialités de poissons et fruits de mer"},
+                        {"nom": "The Dickens", "type": "Pub", "adresse": "25 Cours du Chapeau Rouge, 33000 Bordeaux", "téléphone": "05 56 48 16 46", "gps": {"lat": 44.8445, "lng": -0.5768}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Pub littéraire ambiance britannique"}
+                    ]
+                },
+                {
+                    "nom": "Lille",
+                    "établissements": [
+                        {"nom": "La Chicorée", "type": "Restaurant", "adresse": "15 Place de la Gare, 59000 Lille", "téléphone": "03 20 06 02 86", "gps": {"lat": 50.6370, "lng": 3.0627}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Brasserie lilloise traditionnelle"},
+                        {"nom": "La Capsule", "type": "Pub", "adresse": "25 Rue des trois Mollettes, 59000 Lille", "téléphone": "03 20 57 40 46", "gps": {"lat": 50.6370, "lng": 3.0627}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Bar à bières artisanales renommé"},
+                        {"nom": "Café Citoyen", "type": "Café", "adresse": "7 Place du Vieux Marché aux Chevaux, 59000 Lille", "téléphone": "03 20 15 05 85", "gps": {"lat": 50.6324, "lng": 3.0578}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café associatif et culturel"},
+                        {"nom": "Aux Moules", "type": "Restaurant", "adresse": "34 Rue de Béthune, 59000 Lille", "téléphone": "03 20 57 12 46", "gps": {"lat": 50.6315, "lng": 3.0632}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Spécialiste des moules-frites depuis 1928"},
+                        {"nom": "The London Tavern", "type": "Pub", "adresse": "40 Rue de Gand, 59000 Lille", "téléphone": "03 20 54 04 93", "gps": {"lat": 50.6352, "lng": 3.0589}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub anglais authentique"},
+                        {"nom": "Café de la Paix", "type": "Café", "adresse": "18 Place de la République, 59000 Lille", "téléphone": "03 20 54 70 61", "gps": {"lat": 50.6368, "lng": 3.0662}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Grand café historique"},
+                        {"nom": "Le Barbue d'Anvers", "type": "Restaurant", "adresse": "1 Rue Saint-Étienne, 59000 Lille", "téléphone": "03 20 55 11 02", "gps": {"lat": 50.6402, "lng": 3.0625}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Estaminet flamand traditionnel"},
+                        {"nom": "The Old Town", "type": "Pub", "adresse": "12 Rue de la Monnaie, 59000 Lille", "téléphone": "03 20 57 07 31", "gps": {"lat": 50.6398, "lng": 3.0641}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub écossais dans le Vieux Lille"},
+                        {"nom": "Café Jean", "type": "Café", "adresse": "1 Rue de la Clef, 59000 Lille", "téléphone": "03 20 12 02 12", "gps": {"lat": 50.6295, "lng": 3.0678}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café contemporain design"},
+                        {"nom": "L'Huitrière", "type": "Restaurant", "adresse": "3 Rue des Chats Bossus, 59000 Lille", "téléphone": "03 20 55 43 41", "gps": {"lat": 50.6395, "lng": 3.0632}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Restaurant étoilé fruits de mer raffinés"}
+                    ]
+                },
+                {
+                    "nom": "Nantes",
+                    "établissements": [
+                        {"nom": "Le Cigale", "type": "Restaurant", "adresse": "4 Place Graslin, 44000 Nantes", "téléphone": "02 51 84 94 94", "gps": {"lat": 47.2138, "lng": -1.5541}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Brasserie historique classée monument historique"},
+                        {"nom": "Le Nid", "type": "Bar", "adresse": "Tour Bretagne, 44000 Nantes", "téléphone": "02 40 47 76 70", "gps": {"lat": 47.2138, "lng": -1.5541}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Bar panoramique au sommet de la tour"},
+                        {"nom": "L'Atlantide", "type": "Restaurant", "adresse": "16 Quai Ernest Renaud, 44000 Nantes", "téléphone": "02 40 73 23 23", "gps": {"lat": 47.2072, "lng": -1.5478}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Restaurant étoilé vue sur la Loire"},
+                        {"nom": "The John McByrne", "type": "Pub", "adresse": "11 Rue de la Juiverie, 44000 Nantes", "téléphone": "02 40 47 06 36", "gps": {"lat": 47.2165, "lng": -1.5503}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais typique"},
+                        {"nom": "Café de la Bourse", "type": "Café", "adresse": "4 Place de la Bourse, 44000 Nantes", "téléphone": "02 40 69 25 25", "gps": {"lat": 47.2129, "lng": -1.5562}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café historique place animée"},
+                        {"nom": "Pickles", "type": "Pub", "adresse": "10 Rue des Carmes, 44000 Nantes", "téléphone": "02 40 47 18 18", "gps": {"lat": 47.2158, "lng": -1.5527}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub sportif ambiance britannique"},
+                        {"nom": "Café Cult", "type": "Café", "adresse": "7 Rue des États, 44000 Nantes", "téléphone": "02 40 47 47 47", "gps": {"lat": 47.2172, "lng": -1.5536}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café culturel et artistique"},
+                        {"nom": "Le Bistrot Basque", "type": "Restaurant", "adresse": "5 Rue de la Fosse, 44000 Nantes", "téléphone": "02 40 48 48 48", "gps": {"lat": 47.2145, "lng": -1.5558}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine basque authentique"},
+                        {"nom": "The O'Connell's", "type": "Pub", "adresse": "14 Rue du Château, 44000 Nantes", "téléphone": "02 40 47 57 57", "gps": {"lat": 47.2151, "lng": -1.5514}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Grand pub irlandais"},
+                        {"nom": "Café du Passage", "type": "Café", "adresse": "1 Passage de la Pommeraye, 44000 Nantes", "téléphone": "02 40 47 67 67", "gps": {"lat": 47.2134, "lng": -1.5569}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café élégant dans le passage historique"}
+                    ]
+                },
+                {
+                    "nom": "Strasbourg",
+                    "établissements": [
+                        {"nom": "Le Zimmer", "type": "Restaurant", "adresse": "1 Place de la Gare, 67000 Strasbourg", "téléphone": "03 88 61 20 20", "gps": {"lat": 48.5846, "lng": 7.7353}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Brasserie alsacienne traditionnelle"},
+                        {"nom": "Café Brant", "type": "Café", "adresse": "1 Place de l'Université, 67000 Strasbourg", "téléphone": "03 88 35 36 36", "gps": {"lat": 48.5832, "lng": 7.7368}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café universitaire historique"},
+                        {"nom": "Buerehiesel", "type": "Restaurant", "adresse": "4 Parc de l'Orangerie, 67000 Strasbourg", "téléphone": "03 88 45 56 65", "gps": {"lat": 48.5902, "lng": 7.7724}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Restaurant étoilé dans un cadre idyllique"},
+                        {"nom": "The Dubliners", "type": "Pub", "adresse": "5 Rue du Maréchal Lefebvre, 67000 Strasbourg", "téléphone": "03 88 32 43 04", "gps": {"lat": 48.5835, "lng": 7.7392}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais ambiance chaleureuse"},
+                        {"nom": "Café des Anges", "type": "Café", "adresse": "3 Rue Sainte-Barbe, 67000 Strasbourg", "téléphone": "03 88 32 53 53", "gps": {"lat": 48.5804, "lng": 7.7448}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café branché quartier étudiant"},
+                        {"nom": "La Corde à Linge", "type": "Restaurant", "adresse": "2 Place des Tripiers, 67000 Strasbourg", "téléphone": "03 88 36 09 37", "gps": {"lat": 48.5821, "lng": 7.7482}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine alsacienne revisitée"},
+                        {"nom": "The Shamrock", "type": "Pub", "adresse": "6 Rue des Tonneliers, 67000 Strasbourg", "téléphone": "03 88 32 67 67", "gps": {"lat": 48.5818, "lng": 7.7514}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub celtique musique live"},
+                        {"nom": "Café Potinières", "type": "Café", "adresse": "15 Place de la Cathédrale, 67000 Strasbourg", "téléphone": "03 88 32 41 41", "gps": {"lat": 48.5819, "lng": 7.7501}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café terrasse vue cathédrale"},
+                        {"nom": "Le Gavroche", "type": "Restaurant", "adresse": "4 Rue Klein, 67000 Strasbourg", "téléphone": "03 88 36 31 31", "gps": {"lat": 48.5841, "lng": 7.7523}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Bistrot français traditionnel"},
+                        {"nom": "The Four Seasons", "type": "Pub", "adresse": "12 Rue des Juifs, 67000 Strasbourg", "téléphone": "03 88 32 12 12", "gps": {"lat": 48.5825, "lng": 7.7496}, "image": "https://images.unsplash.com/photo-1572116469036-4f2b748d1136?w=400&h=300&fit=crop", "description": "Pub moderne ambiance détendue"}
+                    ]
+                },
+                {
+                    "nom": "Montpellier",
+                    "établissements": [
+                        {"nom": "Le Jardin des Sens", "type": "Restaurant", "adresse": "11 Avenue Saint-Lazare, 34000 Montpellier", "téléphone": "04 99 58 38 38", "gps": {"lat": 43.6099, "lng": 3.8760}, "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop", "description": "Restaurant 3 étoiles des frères Pourcel"},
+                        {"nom": "The Shakespeare", "type": "Pub", "adresse": "12 Rue des Étuves, 34000 Montpellier", "téléphone": "04 67 60 23 60", "gps": {"lat": 43.6099, "lng": 3.8760}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub anglais littéraire"},
+                        {"nom": "Café de la Mer", "type": "Café", "adresse": "1 Place de la Comédie, 34000 Montpellier", "téléphone": "04 67 60 08 60", "gps": {"lat": 43.6085, "lng": 3.8792}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Grand café sur la place centrale"},
+                        {"nom": "Le Petit Jardin", "type": "Restaurant", "adresse": "20 Rue Jean Jacques Rousseau, 34000 Montpellier", "téléphone": "04 67 60 78 78", "gps": {"lat": 43.6112, "lng": 3.8774}, "image": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop", "description": "Restaurant jardin secret caché"},
+                        {"nom": "The Fitzpatrick's", "type": "Pub", "adresse": "8 Rue de l'Université, 34000 Montpellier", "téléphone": "04 67 60 67 60", "gps": {"lat": 43.6108, "lng": 3.8721}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub irlandais familial"},
+                        {"nom": "Café Riche", "type": "Café", "adresse": "4 Place de la Comédie, 34000 Montpellier", "téléphone": "04 67 60 07 07", "gps": {"lat": 43.6087, "lng": 3.8795}, "image": "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=300&fit=crop", "description": "Café historique élégant"},
+                        {"nom": "L'Olivier", "type": "Restaurant", "adresse": "12 Rue du Palais des Guilhem, 34000 Montpellier", "téléphone": "04 67 52 82 82", "gps": {"lat": 43.6145, "lng": 3.8742}, "image": "https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=400&h=300&fit=crop", "description": "Cuisine méditerranéenne raffinée"},
+                        {"nom": "The James Joyce", "type": "Pub", "adresse": "16 Rue du Bras de Fer, 34000 Montpellier", "téléphone": "04 67 60 60 60", "gps": {"lat": 43.6095, "lng": 3.8758}, "image": "https://images.unsplash.com/photo-1551509134-eb7c5ea9ad2d?w=400&h=300&fit=crop", "description": "Pub littéraire irlandais"},
+                        {"nom": "Café de la Panacée", "type": "Café", "adresse": "14 Rue de l'École de Médecine, 34000 Montpellier", "téléphone": "04 67 60 60 70", "gps": {"lat": 43.6138, "lng": 3.8739}, "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop", "description": "Café contemporain centre d'art"},
+                        {"nom": "Le Pastis", "type": "Restaurant", "adresse": "25 Rue du Faubourg du Courreau, 34000 Montpellier", "téléphone": "04 67 60 60 80", "gps": {"lat": 43.6072, "lng": 3.8781}, "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop", "description": "Bistrot provençal authentique"}
+                    ]
+                }
+            ]
+        };
+
+        // FONCTIONS JAVASCRIPT
+        function chargerVilles() {
+            const select = document.getElementById('villeSelect');
+            data.villes.forEach(ville => {
+                const option = document.createElement('option');
+                option.value = ville.nom;
+                option.textContent = ville.nom;
+                select.appendChild(option);
+            });
+        }
+
+        function afficherEtablissements(etablissements) {
+            const container = document.getElementById('resultats');
+            container.innerHTML = '';
+
+            if (etablissements.length === 0) {
+                container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 2rem;">Aucun établissement trouvé avec ces critères.</p>';
+                return;
+            }
+
+            etablissements.forEach(etablissement => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                card.innerHTML = `
+                    <img src="${etablissement.image}" alt="${etablissement.nom}" class="card-image" 
+                         onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop'">
+                    <div class="card-content">
+                        <h3>${etablissement.nom}</h3>
+                        <span class="type">${etablissement.type}</span>
+                        <p class="address">📍 ${etablissement.adresse}</p>
+                        <p class="phone">📞 ${etablissement.téléphone}</p>
+                        <p class="description">${etablissement.description}</p>
+                        <div class="actions">
+                            <a href="tel:${etablissement.téléphone}" class="action-btn call">Appeler</a>
+                            <a href="https://maps.google.com/?q=${etablissement.gps.lat},${etablissement.gps.lng}" 
+                               target="_blank" class="action-btn map">Voir sur la carte</a>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        function filtrerEtablissements() {
+            const ville = document.getElementById('villeSelect').value;
+            const type = document.getElementById('typeSelect').value;
+            
+            let resultats = [];
+            
+            data.villes.forEach(villeData => {
+                if (ville && villeData.nom !== ville) return;
+                
+                villeData.établissements.forEach(etablissement => {
+                    if (type && etablissement.type !== type) return;
+                    
+                    resultats.push({
+                        ville: villeData.nom,
+                        ...etablissement
+                    });
+                });
+            });
+            
+            afficherEtablissements(resultats);
+        }
+
+        function reinitialiserFiltres() {
+            document.getElementById('villeSelect').value = '';
+            document.getElementById('typeSelect').value = '';
+            filtrerEtablissements();
+        }
+
+        // INITIALISATION
+        document.addEventListener('DOMContentLoaded', function() {
+            chargerVilles();
+            let tousEtablissements = [];
+            data.villes.forEach(ville => {
+                ville.établissements.forEach(etablissement => {
+                    tousEtablissements.push({
+                        ville: ville.nom,
+                        ...etablissement
+                    });
+                });
+            });
+            afficherEtablissements(tousEtablissements);
+        });
+    </script>
+</body>
+</html>
